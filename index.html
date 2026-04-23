@@ -1335,6 +1335,37 @@
   /* CJK line-breaking only where we explicitly opt-in */
   .cjk-break { word-break: break-word; overflow-wrap: anywhere; line-break: strict; }
 
+  /* ============ AUTH GATE ============ */
+  #auth-gate {
+    position: fixed; inset: 0; z-index: 10000;
+    background: var(--n-8);
+    display: flex; align-items: center; justify-content: center;
+  }
+  #auth-gate .auth-card {
+    background: #fff; border: 1px solid var(--n-7); border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    padding: 32px 28px; width: 360px; max-width: 92vw;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  #auth-gate .auth-title { font-weight: 700; font-size: 18px; color: var(--n-0); margin: 0; }
+  #auth-gate .auth-sub { font-size: 13px; color: var(--n-3); margin: 0; }
+  #auth-gate .auth-input {
+    height: 44px; padding: 0 14px;
+    border: 1px solid var(--n-6); border-radius: 6px;
+    font-size: 14px; background: #fff; color: var(--n-0);
+  }
+  #auth-gate .auth-input:focus { outline: none; border-color: var(--n-2); box-shadow: 0 0 0 3px rgba(10,10,10,0.06); }
+  #auth-gate .auth-btn {
+    height: 40px; border: 0; border-radius: 6px;
+    background: var(--pink); color: #fff;
+    font-weight: 700; font-size: 14px; cursor: pointer;
+    transition: filter .12s;
+  }
+  #auth-gate .auth-btn:hover { filter: brightness(1.05); }
+  #auth-gate .auth-err {
+    font-size: 12px; color: var(--red); min-height: 16px;
+  }
+
   /* Responsive safety */
   @media (max-width: 1100px) {
     .app { grid-template-columns: 240px 1fr; gap: 20px; padding: 16px; }
@@ -1349,6 +1380,38 @@
 <!-- Preserve current view in localStorage -->
 </head>
 <body>
+  <!-- Password gate — NOT real security (client-side only, trivially bypassable). Just a soft access barrier. -->
+  <div id="auth-gate">
+    <form class="auth-card" id="auth-form" autocomplete="off">
+      <h2 class="auth-title">アクセスパスワード</h2>
+      <p class="auth-sub">プロトタイプを表示するにはパスワードを入力してください。</p>
+      <input class="auth-input" id="auth-pw" type="password" autofocus />
+      <div class="auth-err" id="auth-err"></div>
+      <button class="auth-btn" type="submit">開く</button>
+    </form>
+  </div>
+  <script>
+    (function () {
+      var expected = atob("emFpa29va2lheg==");
+      var gate = document.getElementById("auth-gate");
+      if (sessionStorage.getItem("auth") === "ok") { gate.remove(); return; }
+      var form = document.getElementById("auth-form");
+      var input = document.getElementById("auth-pw");
+      var err   = document.getElementById("auth-err");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (input.value === expected) {
+          sessionStorage.setItem("auth", "ok");
+          gate.remove();
+        } else {
+          err.textContent = "パスワードが正しくありません";
+          input.value = "";
+          input.focus();
+        }
+      });
+    })();
+  </script>
+
   <div id="root"></div>
 
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
