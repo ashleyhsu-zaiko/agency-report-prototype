@@ -481,9 +481,9 @@ const ListView = ({ events, activeTab, setTab, search, setSearch, dateRange, set
                     <td>
                       {viewMode === "zaiko"
                         ? (ev.form?.copyright || ev.copyright || null)
-                        : (isRequired
+                        : (ev.phase === "1"
                           ? <OptionalActionCell label="必須" color={requiredColor} onClick={(e) => { e.stopPropagation(); onRowAction("action", ev); }} />
-                          : ev.copyright)
+                          : (ev.form?.copyright || ev.copyright))
                       }
                     </td>
                   )}
@@ -491,7 +491,7 @@ const ListView = ({ events, activeTab, setTab, search, setSearch, dateRange, set
                     <td>
                       {viewMode === "zaiko"
                         ? (ev.desk || null)
-                        : (isRequired
+                        : (ev.phase === "1"
                           ? <OptionalActionCell label="必須" color={requiredColor} onClick={(e) => { e.stopPropagation(); onRowAction("action", ev); }} />
                           : ev.desk)
                       }
@@ -501,7 +501,7 @@ const ListView = ({ events, activeTab, setTab, search, setSearch, dateRange, set
                     <td style={{ whiteSpace: "normal", overflow: "visible" }}>
                       {viewMode === "zaiko"
                         ? (ev.bank ? <div className="bank-info">{ev.bank}</div> : null)
-                        : (isRequired
+                        : (ev.phase === "1"
                           ? <OptionalActionCell label="必須" color={requiredColor} onClick={(e) => { e.stopPropagation(); onRowAction("action", ev); }} />
                           : <div className="bank-info">{ev.bank}</div>)
                       }
@@ -550,12 +550,12 @@ const ListView = ({ events, activeTab, setTab, search, setSearch, dateRange, set
                                 <div className="muted">{ev.form.department || "—"}</div>
                               </div>
                             : null)
-                        : (isRequired
+                        : (ev.phase === "1"
                             ? <OptionalActionCell label="任意" />
                             : <div className="desk-info">
-                                <div>{ev.desk}</div>
-                                <div className="muted">営業: 山田 健司</div>
-                                <div className="muted">第2営業部</div>
+                                <div>{ev.form?.deskName || ev.desk}</div>
+                                <div className="muted">営業: {ev.form?.salesName || "—"}</div>
+                                <div className="muted">{ev.form?.department || "—"}</div>
                               </div>)
                       }
                     </td>
