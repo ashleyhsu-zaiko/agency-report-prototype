@@ -182,7 +182,7 @@ const ZAIKO_PHASES = {
 };
 
 // Bump this string whenever SEED_EVENTS changes so persisted state resets.
-const SEED_VERSION = "3";
+const SEED_VERSION = "4";
 
 window.PHASES = PHASES;
 window.ZAIKO_PHASES = ZAIKO_PHASES;
